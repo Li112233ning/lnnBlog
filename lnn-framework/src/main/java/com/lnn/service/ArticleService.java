@@ -1,6 +1,7 @@
 package com.lnn.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lnn.domin.ResponseResult;
 import com.lnn.domin.entity.Article;
 
 /**
@@ -11,6 +12,7 @@ import com.lnn.domin.entity.Article;
  */
 public interface ArticleService extends IService<Article> {
 
+    ResponseResult hotArticleList();
 }
 
 

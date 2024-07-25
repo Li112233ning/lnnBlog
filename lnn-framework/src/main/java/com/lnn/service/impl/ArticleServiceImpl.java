@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lnn.constants.SystemConstants;
 import com.lnn.domin.ResponseResult;
 import com.lnn.domin.entity.Article;
+import com.lnn.domin.entity.Category;
 import com.lnn.domin.vo.ArticleListVo;
 import com.lnn.domin.vo.HotArticleVo;
 import com.lnn.domin.vo.PageVo;
+import com.lnn.domin.vo.articleDetailVo;
 import com.lnn.service.ArticleService;
 import com.lnn.mapper.ArticleMapper;
 import com.lnn.service.CategoryService;
@@ -87,6 +89,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        Article article = getById(id);
+        articleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, articleDetailVo.class);
+
+        Category category = categoryService.getById(article.getCategoryId());
+        if(category != null){
+            articleDetailVo.setCategoryName(category.getName());
+        }
+
+        return ResponseResult.okResult(articleDetailVo);
     }
 }
 

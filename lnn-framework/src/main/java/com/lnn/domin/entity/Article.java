@@ -2,11 +2,13 @@ package com.lnn.domin.entity;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -20,6 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("serial")
+@Accessors(chain = true)
 @TableName("xh_article")
 public class Article {
 
@@ -53,6 +56,9 @@ public class Article {
     private Date updateTime;
     //删除标志（0代表未删除，1代表已删除）
     private Integer delFlag;
+
+    @TableField(exist = false)
+    private String categoryName;
 
 
     }

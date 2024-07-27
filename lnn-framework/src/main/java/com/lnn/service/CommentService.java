@@ -13,7 +13,10 @@ import com.lnn.domin.entity.Comment;
  */
 public interface CommentService extends IService<Comment> {
 
-    ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize);
+
+    ResponseResult addComment(Comment comment);
+
+    ResponseResult commentList(String articleComment, Long articleId, Integer pageNum, Integer pageSize);
 }
 
 

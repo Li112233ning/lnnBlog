@@ -10,12 +10,15 @@ import com.lnn.domin.entity.Comment;
 import com.lnn.domin.entity.User;
 import com.lnn.domin.vo.CommentVo;
 import com.lnn.domin.vo.PageVo;
+import com.lnn.enums.AppHttpCodeEnum;
+import com.lnn.exception.SystemException;
 import com.lnn.mapper.CommentMapper;
 import com.lnn.mapper.UserMapper;
 import com.lnn.service.CommentService;
 import com.lnn.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,14 +40,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 
     @Override
-    public ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize) {
+    public ResponseResult commentList(String commentType,Long articleId, Integer pageNum, Integer pageSize) {
         //查询对应文章的根评论
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         //对articleId进行判断
-        queryWrapper.eq(Comment::getArticleId,articleId);
+        queryWrapper.eq(SystemConstants.ARTICLE_COMMENT.equals(commentType),Comment::getArticleId,articleId);
         //根评论 rootId为-1
         queryWrapper.eq(Comment::getRootId, SystemConstants.COMMENT_ROOT_ID_STATUS_NORMAL);
-
+        //评论类型
+        queryWrapper.eq(Comment::getType,commentType);
 
         //分页查询
         Page<Comment> page = new Page(pageNum,pageSize);
@@ -57,6 +61,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
         return ResponseResult.okResult(new PageVo(commentVoList,page.getTotal()));
 
+    }
+
+    @Override
+    public ResponseResult addComment(Comment comment) {
+        //评论内容不能为空
+        if(!StringUtils.hasText(comment.getContent())){
+            throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+        save(comment);
+        return ResponseResult.okResult();
     }
 
     /**

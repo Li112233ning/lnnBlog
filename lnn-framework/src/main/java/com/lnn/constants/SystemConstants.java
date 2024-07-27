@@ -29,4 +29,13 @@ public class SystemConstants
      */
     public static final int COMMENT_ROOT_ID_STATUS_NORMAL = -1;
 
+    /**
+     * 评论类型为：文章评论
+     */
+    public static final String ARTICLE_COMMENT = "0";
+    /**
+     * 评论类型为：友联评论
+     */
+    public static final String LINK_COMMENT = "1";
+
 }

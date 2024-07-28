@@ -15,10 +15,12 @@ import com.lnn.service.ArticleService;
 import com.lnn.mapper.ArticleMapper;
 import com.lnn.service.CategoryService;
 import com.lnn.utils.BeanCopyUtils;
+import com.lnn.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.spec.RC2ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +37,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -49,14 +53,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         page(page,queryWrapper);
         List<Article> articles = page.getRecords();
 
-//        ArrayList<HotArticleVo> hotArticleVos = new ArrayList<>();
-//        for (Article article : articles) {
-//            HotArticleVo hotArticleVo = new HotArticleVo();
-//            BeanUtils.copyProperties(article,hotArticleVo);
-//            hotArticleVos.add(hotArticleVo);
-//        }
-
         List<HotArticleVo> hotArticleVos = BeanCopyUtils.copyBeanList(articles,HotArticleVo.class);
+
+        hotArticleVos.forEach(hotArticleVo ->
+                hotArticleVo.setViewCount(((Integer) redisCache.getCacheMapValue("article:viewCount", hotArticleVo.getId().toString())).longValue())
+        );
+
 
         return ResponseResult.okResult(hotArticleVos);
     }
@@ -87,6 +89,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //封装查询结果
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
 
+        articleListVos.forEach(articleListVo ->
+                articleListVo.setViewCount(((Integer) redisCache.getCacheMapValue("article:viewCount", articleListVo.getId().toString())).longValue())
+        );
+
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
     }
@@ -94,6 +100,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult getArticleDetail(Long id) {
         Article article = getById(id);
+        //从redis中获取viewCount后存入article
+        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        article.setViewCount(viewCount.longValue());
         articleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, articleDetailVo.class);
 
         Category category = categoryService.getById(article.getCategoryId());
@@ -102,6 +111,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
 
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+        return ResponseResult.okResult();
     }
 }
 

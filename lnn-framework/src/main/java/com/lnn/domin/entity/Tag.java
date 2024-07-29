@@ -9,28 +9,20 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 
 /**
- * 友链(Link)表实体类
+ * 标签(Tag)表实体类
  *
  * @author makejava
- * @since 2024-07-25 22:10:58
+ * @since 2024-07-29 10:50:54
  */
-@TableName("sg_link")
+@TableName("sg_tag")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Link implements Serializable {
+public class Tag implements Serializable {
     
     private Long id;
-    
+    //标签名
     private String name;
-    
-    private String logo;
-    
-    private String description;
-    //网站地址
-    private String address;
-    //审核状态 (0代表审核通过，1代表审核未通过，2代表未审核)
-    private String status;
     
     private Long createBy;
     
@@ -41,6 +33,8 @@ public class Link implements Serializable {
     private Date updateTime;
     //删除标志（0代表未删除，1代表已删除）
     private Integer delFlag;
+    //备注
+    private String remark;
 
 }
 

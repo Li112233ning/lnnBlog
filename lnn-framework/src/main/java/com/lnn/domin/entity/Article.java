@@ -23,7 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuppressWarnings("serial")
 @Accessors(chain = true)
-@TableName("xh_article")
+@TableName("sg_article")
 public class Article {
 
     @TableId

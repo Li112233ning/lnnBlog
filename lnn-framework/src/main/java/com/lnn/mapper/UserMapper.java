@@ -2,8 +2,16 @@ package com.lnn.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lnn.domin.entity.User;
-import org.springframework.stereotype.Repository;
 
-@Repository
+
+
+/**
+ * 用户表(User)表数据库访问层
+ *
+ * @author makejava
+ * @since 2022-02-03 16:25:39
+ */
 public interface UserMapper extends BaseMapper<User> {
+
 }
+

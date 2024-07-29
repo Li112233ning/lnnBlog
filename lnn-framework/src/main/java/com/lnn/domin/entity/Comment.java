@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author makejava
  * @since 2024-07-26 19:35:21
  */
-@TableName("xh_comment")
+@TableName("sg_comment")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
